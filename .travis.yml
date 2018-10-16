@@ -1,0 +1,19 @@
+os: linux
+dist: xenial
+
+language: python
+python:
+    - "3.7"
+
+services:
+    - docker
+
+install:
+    - travis_retry pip install --retries=30 --timeout=5 --no-cache-dir --disable-pip-version-check -U pytest pytest-cov coveralls
+    - travis_retry pip install --retries=30 --timeout=5 --no-cache-dir --disable-pip-version-check -e .
+
+script:
+    - pytest -v --cov=hostport --cov-report=term-missing tests.py
+
+after_success:
+    - coveralls
