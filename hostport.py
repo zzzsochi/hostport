@@ -2,8 +2,8 @@ from typing import NamedTuple, Optional
 
 
 class HostPort(NamedTuple):
-    host: str
-    port: int
+    host: Optional[str]
+    port: Optional[int]
 
 
 def parse(hostport: str = '', *,
