@@ -3,8 +3,16 @@ import pytest
 import hostport
 
 
-def test_hostport():
-    assert hostport.parse('host:30') == hostport.HostPort(host='host', port=30)
+@pytest.mark.parametrize('raw, host, port', [
+    ('testhost:30', 'testhost', 30),
+    ('testhost', 'testhost', None),
+    ('[fe80::95f3]:30', 'fe80::95f3', 30),
+    ('[fe80::95f3]', 'fe80::95f3', None),
+    ('30', None, 30),
+    (':30', None, 30),
+])
+def test_no_default(raw, host, port):
+    assert hostport.parse(raw) == hostport.HostPort(host=host, port=port)
 
 
 def test_default_host():
@@ -17,34 +25,15 @@ def test_default_port():
     assert _hp == hostport.HostPort(host='host', port=30)
 
 
-def test_default():
+def test_default_host_port():
     _hp = hostport.parse(default_host='host', default_port=30)
     assert _hp == hostport.HostPort(host='host', port=30)
 
 
-def test_no_default_port():
-    _hp = hostport.parse('host')
-    assert _hp == hostport.HostPort(host='host', port=None)
-
-
-def test_no_default_host():
-    _hp = hostport.parse('30')
-    assert _hp == hostport.HostPort(host=None, port=30)
-
-
-def test_no_default():
-    _hp = hostport.parse()
-    assert _hp == hostport.HostPort(host=None, port=None)
-
-
-def test_colon_port():
-    _hp = hostport.parse(':30')
-    assert _hp == hostport.HostPort(host=None, port=30)
-
-
-def test_bad_port():
+@pytest.mark.parametrize('raw', ['host:bad', '[fe80::95f3]:bad]'])
+def test_bad_port(raw):
     with pytest.raises(ValueError):
-        hostport.parse('host:bad')
+        hostport.parse(raw)
 
 
 def test_bad_colon_port():
@@ -52,6 +41,7 @@ def test_bad_colon_port():
         hostport.parse(':bad')
 
 
-def test_negative_port():
+@pytest.mark.parametrize('raw', ['host:-1', '[fe80::95f3]:-1'])
+def test_negative_port(raw):
     with pytest.raises(ValueError):
-        hostport.parse('host:-1')
+        hostport.parse(raw)

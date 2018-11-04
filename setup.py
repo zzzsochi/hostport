@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='hostport',
-    version='1.0',
+    version='1.1',
     description='Simple host:port parser',
     long_description=open('README.rst', 'r').read(),
     author='Zelenyak "ZZZ" Alexander',

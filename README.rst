@@ -32,6 +32,10 @@ Usage
     'host'
     >>> hostport.parse('host:30').port
     30
+    >>> hostport.parse('[fe80::95f3]:50051')
+    HostPort(host='[fe80::95f3]', port=50051)
+    >>> hostport.parse('[fe80::95f3]')
+    HostPort(host='[fe80::95f3]', port=None)
     >>> hostport.parse('host', default_port=30)
     HostPort(host='host', port=30)
     >>> hostport.parse('30', default_host='host')
